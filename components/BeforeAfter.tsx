@@ -8,6 +8,7 @@ type Props = {
   caption: string;
 };
 
+/** Paire avant/après 4:3, badges bleus, légende commune + intervention (blueprint 02 §7). */
 export default function BeforeAfter({ before, after, altBefore, altAfter, caption }: Props) {
   return (
     <figure className="m-0">

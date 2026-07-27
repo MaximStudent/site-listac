@@ -4,9 +4,11 @@ import { MapPin } from "lucide-react";
 import { AREAS, BUSINESS, SERVED_TEXT } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "Zone d'intervention — Brabant wallon & région de Namur",
+  title: "Zone d'intervention en Brabant wallon",
   description:
-    "LISTAC intervient depuis Autre-Église (Ramillies) dans tout le Brabant wallon : Jodoigne, Perwez, Orp-Jauche, Incourt, ainsi que Gembloux, Éghezée et la région de Namur.",
+    // Communes citées = celles où un chantier est documenté (geotags Instagram).
+    // Orp-Jauche et Éghezée retirés : aucune preuve d'intervention (docs/08).
+    "LISTAC intervient depuis Autre-Église (Ramillies) dans tout le Brabant wallon : Beauvechain, Incourt, Jodoigne, Perwez, Grez-Doiceau, Wavre, ainsi que la région de Gembloux.",
   alternates: { canonical: "/zone-intervention/" },
 };
 

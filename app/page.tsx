@@ -15,13 +15,14 @@ import {
   BadgeCheck,
 } from "lucide-react";
 import { AREAS, BUSINESS, REVIEWS, SERVICES, SERVED_TEXT } from "@/lib/config";
+import { REALISATIONS } from "@/lib/content";
 import Reveal from "@/components/Reveal";
 import BeforeAfter from "@/components/BeforeAfter";
 import Stars from "@/components/Stars";
 import JsonLdElectrician from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  title: "LISTAC — Électricien en Brabant wallon | Dépannage, conformité RGIE, bornes",
+  title: { absolute: "Électricien en Brabant wallon, ponctuel | LISTAC" },
   description:
     "LISTAC (Gabriel Mengal), électricien à Autre-Église (Ramillies) : dépannage électrique, mise en conformité RGIE, bornes de recharge et domotique en Brabant wallon. 0479 80 30 33.",
   alternates: { canonical: "/" },
@@ -50,11 +51,15 @@ const FAQ = [
   },
   {
     q: "Le devis est-il gratuit ?",
+    // TODO CLIENT: confirmer devis gratuit + déplacement (fiche client point 8)
     a: "Demandez votre devis via le formulaire ou par téléphone : réponse rapide et chiffrage clair avant toute intervention.",
   },
   {
     q: "Quelle est votre zone d'intervention ?",
-    a: `Basés à Autre-Église (Ramillies), nous intervenons dans tout le Brabant wallon : Jodoigne, Perwez, Orp-Jauche, Incourt, ainsi que ${SERVED_TEXT}.`,
+    // Communes citées = celles où un chantier est réellement documenté (geotags
+    // Instagram, `docs/08-geotags-communes.md`). Ne pas y remettre Orp-Jauche :
+    // aucun chantier ne peut y être montré.
+    a: `Basés à Autre-Église (Ramillies), nous intervenons dans ${SERVED_TEXT} : Beauvechain, Incourt, Jodoigne, Perwez, Grez-Doiceau, Wavre et Gembloux.`,
   },
 ] as const;
 
@@ -63,6 +68,7 @@ export default function HomePage() {
     <>
       <JsonLdElectrician />
 
+      {/* ============ 1. HERO ============ */}
       <section className="mx-auto grid max-w-[var(--container-max)] items-center gap-[var(--space-8)] px-[var(--page-padding)] py-[var(--space-12)] lg:grid-cols-2 lg:py-[var(--space-16)]">
         <div>
           <h1>Électricien en Brabant wallon</h1>
@@ -101,8 +107,9 @@ export default function HomePage() {
         </div>
         <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius)]">
           <Image
-            src="/images/real-lustre-apres.jpg"
-            alt="Installation de luminaires suspendus dans une cage d'escalier — réalisation LISTAC"
+            // Élément LCP : WebP 1180×885, 44 ko. Chantier réel — Incourt, février 2024.
+            src="/images/hero-suspensions-incourt.webp"
+            alt="Cage d'escalier éclairée par une composition de suspensions — chantier LISTAC à Incourt"
             fill
             priority
             sizes="(min-width: 1024px) 590px, 100vw"
@@ -111,6 +118,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ============ 2. BANDE DE RÉASSURANCE ============ */}
       <section aria-label="Garanties" className="bg-[var(--color-surface-alt)]">
         <div className="mx-auto grid max-w-[var(--container-max)] gap-4 px-[var(--page-padding)] py-[var(--space-8)] sm:grid-cols-2 lg:grid-cols-4">
           <p className="flex items-center gap-3 text-sm m-0">
@@ -132,6 +140,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ============ 3. SERVICES ============ */}
       <section className="mx-auto max-w-[var(--container-max)] px-[var(--page-padding)] py-[var(--section-gap)]">
         <Reveal>
           <h2>Nos services d&apos;électricité</h2>
@@ -151,9 +160,7 @@ export default function HomePage() {
               >
                 <Icon size={32} strokeWidth={2} className="text-[var(--color-primary)]" aria-hidden="true" />
                 <h3 className="mt-3">{s.name}</h3>
-                <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-                  {(s.description.split(" ? ")[0] ?? s.description).split(" : ")[0] ?? s.description}.
-                </p>
+                <p className="mt-2 text-sm text-[var(--color-text-muted)]">{(s.description.split(" ? ")[0] ?? s.description).split(" : ")[0] ?? s.description}.</p>
                 <span className="mt-3 inline-block text-sm font-medium text-[var(--color-primary)] group-hover:underline underline-offset-4">
                   En savoir plus →
                 </span>
@@ -163,6 +170,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ============ 4. AVANT / APRÈS ============ */}
       <section className="bg-[var(--color-surface-alt)]">
         <div className="mx-auto max-w-[var(--container-max)] px-[var(--page-padding)] py-[var(--section-gap)]">
           <Reveal>
@@ -171,25 +179,23 @@ export default function HomePage() {
               De vraies photos de nos interventions — pas des images d&apos;illustration.
             </p>
           </Reveal>
+          {/*
+            Les 2 premières réalisations, pilotées par les données : plus de chemin
+            d'image en dur ici, et plus aucun `TODO CLIENT: commune` affiché au visiteur.
+            L'ordre de REALISATIONS est volontaire — meilleurs avant/après en tête.
+          */}
           <div className="mt-8 grid gap-[var(--space-8)] lg:grid-cols-2">
-            <Reveal>
-              <BeforeAfter
-                before="/images/real-cave-avant.jpg"
-                after="/images/real-cave-apres.jpg"
-                altBefore="Gaines et câbles en attente avant pose du tableau électrique — avant"
-                altAfter="Tableau électrique posé, étiqueté LISTAC — après"
-                caption="Remplacement complet de tableau électrique — rénovation. TODO CLIENT: commune + durée."
-              />
-            </Reveal>
-            <Reveal>
-              <BeforeAfter
-                before="/images/real-ferme-avant.jpg"
-                after="/images/real-ferme-apres.jpg"
-                altBefore="Câblage complet en cours dans une ferme en rénovation — avant"
-                altAfter="Coffret et gaines posés sur mur en briques — après"
-                caption="Installation électrique complète — bâtiment en rénovation. TODO CLIENT: commune + durée."
-              />
-            </Reveal>
+            {REALISATIONS.slice(0, 2).map((r) => (
+              <Reveal key={r.slug}>
+                <BeforeAfter
+                  before={r.before}
+                  after={r.after}
+                  altBefore={r.altBefore}
+                  altAfter={r.altAfter}
+                  caption={`${r.title} — ${r.commune}, ${r.date}.`}
+                />
+              </Reveal>
+            ))}
           </div>
           <Link
             href="/realisations/"
@@ -201,6 +207,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ============ 5. AVIS ============ */}
       <section className="mx-auto max-w-[var(--container-max)] px-[var(--page-padding)] py-[var(--section-gap)]">
         <Reveal>
           <div className="flex flex-wrap items-baseline gap-3">
@@ -225,8 +232,10 @@ export default function HomePage() {
             </Reveal>
           ))}
         </div>
+        {/* TODO CLIENT: BUSINESS.googleReviewUrl (lien g.page/r/… de la fiche) pour le bouton « Voir nos avis Google » */}
       </section>
 
+      {/* ============ 6. DIFFÉRENCIATEUR DOMOTIQUE ============ */}
       <section className="bg-[var(--color-primary)] text-[var(--color-on-primary)]">
         <div className="mx-auto grid max-w-[var(--container-max)] items-center gap-[var(--space-8)] px-[var(--page-padding)] py-[var(--section-gap)] lg:grid-cols-2">
           <div>
@@ -248,8 +257,9 @@ export default function HomePage() {
           </div>
           <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius)]">
             <Image
-              src="/images/real-lustre-avant.jpg"
-              alt="Pose de luminaires suspendus depuis un échafaudage — chantier LISTAC"
+              // Section domotique : une vraie photo de domotique, pas un lustre.
+              src="/images/realisations/beauvechain-domotique-niko-apres.webp"
+              alt="Modules de domotique Niko Home Control câblés et repérés — chantier LISTAC à Beauvechain"
               fill
               sizes="(min-width: 1024px) 590px, 100vw"
               className="object-cover"
@@ -258,6 +268,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ============ 7. ZONE D'INTERVENTION ============ */}
       <section className="mx-auto max-w-[var(--container-max)] px-[var(--page-padding)] py-[var(--section-gap)]">
         <Reveal>
           <h2>Zone d&apos;intervention</h2>
@@ -284,6 +295,7 @@ export default function HomePage() {
         </p>
       </section>
 
+      {/* ============ 8. FAQ ============ */}
       <section className="bg-[var(--color-surface-alt)]">
         <div className="mx-auto max-w-[var(--container-max)] px-[var(--page-padding)] py-[var(--section-gap)]">
           <Reveal>
@@ -302,6 +314,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ============ 9. CTA FINAL ============ */}
       <section className="mx-auto max-w-[var(--container-max)] px-[var(--page-padding)] py-[var(--section-gap)] text-center">
         <Reveal>
           <h2>Un projet ou une panne&nbsp;?</h2>

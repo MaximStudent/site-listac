@@ -58,6 +58,7 @@ export default function Footer() {
           <p className="pt-2 opacity-90">
             {BUSINESS.legalName} — TVA {BUSINESS.vat}
           </p>
+          {/* IBAN volontairement absent (note de sécurité fiche client). */}
         </div>
       </div>
       <div className="border-t border-white/20">

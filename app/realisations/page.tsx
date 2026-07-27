@@ -4,7 +4,7 @@ import BeforeAfter from "@/components/BeforeAfter";
 import { REALISATIONS } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Nos réalisations — chantiers avant / après",
+  title: "Réalisations — chantiers avant / après",
   description:
     "Tableaux électriques, installations complètes, éclairage : les chantiers réels de LISTAC en photos avant / après. Pas d'images d'illustration.",
   alternates: { canonical: "/realisations/" },
@@ -26,7 +26,7 @@ export default function RealisationsPage() {
               after={r.after}
               altBefore={r.altBefore}
               altAfter={r.altAfter}
-              caption={`${r.title} — ${r.type}`}
+              caption={`${r.title} — ${r.commune}, ${r.date}.`}
             />
             <span className="mt-2 inline-block text-sm font-medium text-[var(--color-primary)] group-hover:underline underline-offset-4">
               Voir ce chantier →

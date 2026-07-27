@@ -1,5 +1,6 @@
 import { Star } from "lucide-react";
 
+/** Note affichée — valeur réelle uniquement. */
 export default function Stars() {
   return (
     <span className="inline-flex items-center gap-0.5 text-[var(--color-primary)]" aria-hidden="true">

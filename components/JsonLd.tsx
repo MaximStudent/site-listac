@@ -1,5 +1,10 @@
 import { AREAS, BUSINESS, REVIEWS } from "@/lib/config";
 
+/**
+ * Données structurées Electrician (LocalBusiness) + AggregateRating + Review.
+ * Valeurs réelles uniquement : 5,0 / 6 avis — jamais arrondies ni gonflées.
+ * NAP strictement identique au Google Business Profile.
+ */
 export default function JsonLdElectrician() {
   const data = {
     "@context": "https://schema.org",
@@ -11,8 +16,8 @@ export default function JsonLdElectrician() {
     email: BUSINESS.email,
     vatID: BUSINESS.vat.replace(/\s/g, ""),
     founder: { "@type": "Person", name: BUSINESS.owner },
-    image: `${BUSINESS.siteUrl}/images/real-lustre-apres.jpg`,
-    logo: `${BUSINESS.siteUrl}/images/logo-listac.png`,
+    image: `${BUSINESS.siteUrl}/images/hero-suspensions-incourt.webp`,
+    logo: `${BUSINESS.siteUrl}/images/logo-listac.webp`,
     address: {
       "@type": "PostalAddress",
       streetAddress: BUSINESS.address.street,

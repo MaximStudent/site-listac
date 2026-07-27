@@ -3,7 +3,7 @@ import { BUSINESS } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
-  description: `Mentions légales du site — ${BUSINESS.legalName}, TVA ${BUSINESS.vat}.`,
+  description: `Mentions légales du site ${BUSINESS.siteUrl} — ${BUSINESS.legalName}, TVA ${BUSINESS.vat}.`,
   alternates: { canonical: "/mentions-legales/" },
   robots: { index: false, follow: true },
 };
@@ -35,6 +35,7 @@ export default function MentionsPage() {
         <p>
           <strong>Hébergement</strong>
           <br />
+          {/* TODO CLIENT: confirmer l'hébergeur final (Vercel Inc. si déploiement Vercel) */}
           Site hébergé par Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis.
         </p>
         <p>

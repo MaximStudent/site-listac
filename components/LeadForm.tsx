@@ -7,6 +7,12 @@ type Status = "idle" | "sending" | "ok" | "error";
 
 const BESOINS = ["Dépannage", "Mise en conformité", "Borne / domotique", "Autre"] as const;
 
+/**
+ * Formulaire 3 champs visibles (doctrine 05) : Nom, Téléphone, Besoin.
+ * Photo optionnelle (double la qualité du lead), honeypot, validation on-blur,
+ * inputmode tel. Envoi vers le webhook n8n (TODO CLIENT) ; en attendant,
+ * bascule mailto propre.
+ */
 export default function LeadForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [besoin, setBesoin] = useState<string>("");
@@ -16,7 +22,7 @@ export default function LeadForm() {
     e.preventDefault();
     const form = e.currentTarget;
     const data = new FormData(form);
-    if (data.get("website")) return;
+    if (data.get("website")) return; // honeypot
     const nom = String(data.get("nom") ?? "");
     const tel = String(data.get("tel") ?? "");
     if (!/^[\d+ ./-]{8,}$/.test(tel)) {
@@ -24,6 +30,7 @@ export default function LeadForm() {
       return;
     }
     setStatus("sending");
+    // TODO CLIENT (Prompt 5) : webhook n8n (VPS UE) — accusé de réception < 60 s.
     if (BUSINESS.n8nWebhookUrl) {
       try {
         const res = await fetch(BUSINESS.n8nWebhookUrl, { method: "POST", body: data });

@@ -21,9 +21,14 @@ export const dynamicParams = false;
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const service = SERVICES.find((s) => s.slug === slug);
+  // `absolute` désactive le template de `layout.tsx` (« %s | LISTAC, électricien
+  // Brabant wallon »). Sans ça, ces titres contiennent DÉJÀ « | LISTAC » et on
+  // obtenait « … | LISTAC | LISTAC, électricien Brabant wallon » : marque dupliquée
+  // et titre tronqué dans les résultats Google. C'est exactement la faute relevée
+  // chez Electrovolet au PROMPT 2.
   if (service) {
     return {
-      title: service.title,
+      title: { absolute: service.title },
       description: service.description,
       alternates: { canonical: `/${slug}/` },
     };
@@ -31,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const area = AREAS.find((a) => a.slug === slug);
   if (area) {
     return {
-      title: `Électricien ${area.commune} — dépannage & conformité RGIE | LISTAC`,
+      title: { absolute: `Électricien ${area.commune} | LISTAC, dépannage & RGIE` },
       description: `LISTAC, électricien basé à Autre-Église (Ramillies), intervient à ${area.commune} : dépannage, mise en conformité RGIE, tableau, bornes, domotique. ${BUSINESS.phoneDisplay}.`,
       alternates: { canonical: `/${slug}/` },
     };

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SERVICES } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "Nos services d'électricité en Brabant wallon",
+  title: "Nos services d’électricité",
   description:
     "Dépannage, mise en conformité RGIE, installation & rénovation, tableau électrique, bornes de recharge, domotique & réseaux : les services LISTAC en Brabant wallon.",
   alternates: { canonical: "/services/" },

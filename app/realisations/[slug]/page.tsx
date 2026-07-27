@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import BeforeAfter from "@/components/BeforeAfter";
+import Gallery from "@/components/Gallery";
 import { REALISATIONS } from "@/lib/content";
-import { BUSINESS } from "@/lib/config";
+import { AREAS, BUSINESS } from "@/lib/config";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -17,7 +18,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const r = REALISATIONS.find((x) => x.slug === slug);
   if (!r) return {};
   return {
-    title: `${r.title} — réalisation LISTAC`,
+    // Le H1 est long et descriptif (bon pour le lecteur) ; le <title> doit être
+    // court et calibré sur la requête réelle « <type> <commune> ». `absolute` évite
+    // en plus le suffixe du template, qui dupliquait la marque.
+    title: { absolute: `${r.type} à ${r.commune} — réalisation | LISTAC` },
     description: r.description.slice(0, 155),
     alternates: { canonical: `/realisations/${slug}/` },
   };
@@ -27,12 +31,23 @@ export default async function RealisationPage({ params }: Props) {
   const { slug } = await params;
   const r = REALISATIONS.find((x) => x.slug === slug);
   if (!r) notFound();
+  // Maillage interne : chaque chantier renvoie vers sa page commune. C'est ce lien
+  // qui transforme une galerie photo en preuve de présence locale.
+  const area = AREAS.find((a) => a.slug === r.areaSlug);
   return (
     <article className="mx-auto max-w-[var(--container-max)] px-[var(--page-padding)] py-[var(--space-12)]">
       <h1>{r.title}</h1>
       <div aria-hidden="true" className="mt-3 h-1 w-16 rounded-full bg-[var(--color-accent)]" />
       <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-        {r.type} · {r.commune}
+        {r.type} ·{" "}
+        {area ? (
+          <Link href={`/${area.slug}/`} className="underline underline-offset-2 hover:no-underline">
+            {r.commune}
+          </Link>
+        ) : (
+          r.commune
+        )}{" "}
+        · {r.date}
       </p>
       <div className="mt-6 max-w-3xl">
         <BeforeAfter
@@ -44,7 +59,11 @@ export default async function RealisationPage({ params }: Props) {
         />
       </div>
       <p className="mt-6 text-lg">{r.description}</p>
-      <div className="mt-8 flex flex-wrap gap-3">
+
+      {/* Galerie complète du chantier — toutes les photos, différées. */}
+      <Gallery realisation={r} />
+
+      <div className="mt-[var(--space-12)] flex flex-wrap gap-3">
         <a
           href={`tel:${BUSINESS.phone}`}
           aria-label={`Appeler ${BUSINESS.brandName} au ${BUSINESS.phoneDisplay}`}

@@ -1,36 +1,53 @@
+/* ============================================================
+   LISTAC s.r.l. — Design tokens
+   Généré le 2026-07-27 (Prompt 3 — design system exécutable).
+   Source de vérité : design-system/listac/MASTER.md (section SURCHARGES)
+   + docs/02-blueprint-design.md + docs/03-decisions-design.md.
+   Règle : AUCUN hex en dur dans les composants — uniquement ces tokens.
+   Polices : chargées via next/font (Montserrat + Roboto, self-hosted,
+   subset latin, display swap) qui définit --font-heading / --font-body.
+   JAMAIS de <link> vers fonts.googleapis.com.
+   ============================================================ */
+
 :root {
-  --color-primary: #160B8B;
+  /* ---------- Couleurs (contrastes calculés, cf. 03-decisions) ---------- */
+  --color-primary: #160B8B;        /* bleu EXACT du logo LISTAC (extrait du fichier, 2026-07-27). 14,43:1 sur blanc */
   --color-on-primary: #FFFFFF;
-  --color-accent: #E30613;
-  --color-accent-strong: #B00510;
+  /* RÈGLE : ne jamais poser --color-accent directement sur --color-primary (2,96:1) —
+     toujours séparés par une surface blanche/neutre. */
+  --color-accent: #E30613;         /* rouge — CTA UNIQUEMENT. Blanc dessus : 4,88:1 (AA) */
+  --color-accent-strong: #B00510;  /* hover/pressed du CTA. Blanc dessus : 7,3:1 */
   --color-on-accent: #FFFFFF;
   --color-surface: #FFFFFF;
-  --color-surface-alt: #F5F7FA;
-  --color-text: #1A1A1A;
-  --color-text-muted: #495057;
-  --color-border: #E9ECEF;
-  --color-success-bg: #5CB85C;
+  --color-surface-alt: #F5F7FA;    /* sections alternées. Texte dessus : 16,22:1 */
+  --color-text: #1A1A1A;           /* 17,4:1 — jamais de noir pur (#000) */
+  --color-text-muted: #495057;     /* 8,18:1 blanc / 7,62:1 surface-alt */
+  --color-border: #E9ECEF;         /* bordures de cartes, 1px */
+  --color-success-bg: #5CB85C;     /* FOND de confirmation uniquement — jamais en texte sur blanc (2,48:1) */
   --color-on-success: #1A1A1A;
-  --color-error: #B00510;
+  --color-error: #B00510;          /* messages d'erreur formulaire (7,3:1) */
   --color-focus: #160B8B;
 
-  --text-h1: 2rem;
-  --text-h2: 1.5rem;
-  --text-h3: 1.125rem;
-  --text-body: 1rem;
-  --text-small: 0.875rem;
-  --text-proof: 1.5rem;
-  --leading-tight: 1.15;
-  --leading-heading: 1.2;
-  --leading-card: 1.3;
+  /* ---------- Typographie (échelle mobile-first, base 16px) ---------- */
+  /* --font-heading / --font-body injectées par next/font (Montserrat / Roboto) */
+  --text-h1: 2rem;          /* 32px mobile */
+  --text-h2: 1.5rem;        /* 24px */
+  --text-h3: 1.125rem;      /* 18px */
+  --text-body: 1rem;        /* 16px */
+  --text-small: 0.875rem;   /* 14px */
+  --text-proof: 1.5rem;     /* chiffre de preuve (5,0★) */
+  --leading-tight: 1.15;    /* H1 */
+  --leading-heading: 1.2;   /* H2 */
+  --leading-card: 1.3;      /* H3 */
   --leading-body: 1.6;
-  --measure-body: 65ch;
-  --weight-heading: 700;
+  --measure-body: 65ch;     /* longueur de ligne max du corps */
+  --weight-heading: 700;    /* Montserrat 700 (H1/H2), 600 pour H3 */
   --weight-heading-sub: 600;
   --weight-body: 400;
-  --weight-medium: 500;
-  --tracking-label: 0.04em;
+  --weight-medium: 500;     /* boutons, labels */
+  --tracking-label: 0.04em; /* micro-labels majuscules uniquement */
 
+  /* ---------- Espacement (échelle 4px) ---------- */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -40,35 +57,39 @@
   --space-12: 48px;
   --space-16: 64px;
   --space-24: 96px;
-  --page-padding: var(--space-4);
-  --section-gap: var(--space-12);
+  --page-padding: var(--space-4);      /* latéral mobile */
+  --section-gap: var(--space-12);      /* entre sections, mobile */
   --card-padding: var(--space-4);
   --container-max: 1200px;
 
-  --radius: 4px;
-  --shadow-none: none;
+  /* ---------- Formes & élévation ---------- */
+  --radius: 4px;                        /* UNIQUE — pas de 0/6px mélangés */
+  --shadow-none: none;                  /* cartes au repos : bordure, pas d'ombre */
   --border-card: 1px solid var(--color-border);
 
-  --touch-target: 48px;
-  --action-bar-height: 56px;
+  /* ---------- Interaction ---------- */
+  --touch-target: 48px;                 /* minimum WCAG 44px, on prend 48 */
+  --action-bar-height: 56px;            /* barre mobile Appeler/Devis */
   --action-bar-safe: env(safe-area-inset-bottom, 0px);
   --focus-ring: 2px solid var(--color-focus);
   --focus-offset: 2px;
 
-  --duration-fast: 150ms;
-  --duration-base: 200ms;
-  --duration-reveal: 250ms;
-  --duration-crossfade: 300ms;
+  /* ---------- Mouvement (transform/opacity uniquement) ---------- */
+  --duration-fast: 150ms;               /* hover/press boutons */
+  --duration-base: 200ms;               /* barre mobile */
+  --duration-reveal: 250ms;             /* reveal de section, UNE fois */
+  --duration-crossfade: 300ms;          /* avant/après */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --reveal-distance: 12px;
+  --reveal-distance: 12px;              /* translateY du reveal */
 }
 
+/* ---------- Desktop (≥ 1024px) ---------- */
 @media (min-width: 1024px) {
   :root {
-    --text-h1: 3rem;
-    --text-h2: 2.25rem;
-    --text-h3: 1.25rem;
-    --text-body: 1.0625rem;
+    --text-h1: 3rem;        /* 48px */
+    --text-h2: 2.25rem;     /* 36px */
+    --text-h3: 1.25rem;     /* 20px */
+    --text-body: 1.0625rem; /* 17px */
     --text-proof: 2rem;
     --page-padding: var(--space-8);
     --section-gap: var(--space-24);
@@ -76,6 +97,7 @@
   }
 }
 
+/* ---------- Accessibilité : reduced motion dès les tokens ---------- */
 @media (prefers-reduced-motion: reduce) {
   :root {
     --duration-fast: 0ms;

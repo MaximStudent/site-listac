@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Phone } from "lucide-react";
 import { BUSINESS } from "@/lib/config";
 
+/** Menu : 5 entrées maximum (règle Prompt 4). */
 const NAV = [
   { href: "/", label: "Accueil" },
   { href: "/services/", label: "Services" },
@@ -17,10 +18,12 @@ export default function Header() {
       <div className="mx-auto flex items-center justify-between max-w-[var(--container-max)] px-[var(--page-padding)] h-16">
         <Link href="/" aria-label="LISTAC — retour à l'accueil" className="flex items-center">
           <Image
-            src="/images/logo-listac.png"
+            // WebP 452×148, 10 ko au lieu de 57 ko. Affiché à 36 px de haut : le PNG
+            // d'origine était 10× surdimensionné et concurrençait le chargement du LCP.
+            src="/images/logo-listac.webp"
             alt="LISTAC fils, by Gabriel Mengal — électricien"
-            width={1132}
-            height={371}
+            width={452}
+            height={148}
             priority
             className="h-9 w-auto"
           />

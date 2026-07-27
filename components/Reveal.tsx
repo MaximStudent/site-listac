@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
+/** Reveal au scroll en CSS pur + IntersectionObserver (décision 2.5 : pas de GSAP). */
 export default function Reveal({
   children,
   className = "",

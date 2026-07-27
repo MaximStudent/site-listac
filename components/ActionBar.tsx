@@ -3,6 +3,12 @@
 import { Phone, FileText } from "lucide-react";
 import { BUSINESS } from "@/lib/config";
 
+/**
+ * Barre d'action persistante mobile — composant n°1 (doctrine 05).
+ * Décision Maxim 27/07 : blanc + bleu dominants, rouge réduit à un filet
+ * d'accent 2px. Appeler = bleu plein, Devis = blanc bordé bleu.
+ */
+
 function track(event: "call_click" | "quote_click") {
   // TODO CLIENT (Prompt 5) : brancher BUSINESS.n8nWebhookUrl (VPS UE).
   if (BUSINESS.n8nWebhookUrl) {
