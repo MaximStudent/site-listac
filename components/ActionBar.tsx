@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Phone, FileText } from "lucide-react";
 import { BUSINESS } from "@/lib/config";
 
@@ -10,7 +11,9 @@ import { BUSINESS } from "@/lib/config";
  */
 
 function track(event: "call_click" | "quote_click") {
-  // TODO CLIENT (Prompt 5) : brancher BUSINESS.n8nWebhookUrl (VPS UE).
+  // Tracking des clics : envoyé au webhook n8n (VPS UE) dès que
+  // `NEXT_PUBLIC_N8N_WEBHOOK_URL` est définie au build. Sinon, aucun appel réseau —
+  // pas de requête vers une URL vide, pas d'erreur console chez le visiteur.
   if (BUSINESS.n8nWebhookUrl) {
     navigator.sendBeacon(
       BUSINESS.n8nWebhookUrl,
@@ -40,7 +43,10 @@ export default function ActionBar() {
         <Phone size={20} strokeWidth={2} aria-hidden="true" />
         Appeler
       </a>
-      <a
+      {/* Navigation interne : <Link> et non <a>. Next préfetche la page et évite un
+          rechargement complet du document — sur mobile en 4G, c'est la différence
+          entre un passage instantané au formulaire et une seconde d'écran blanc. */}
+      <Link
         href="/contact/"
         aria-label="Demander un devis gratuit"
         onClick={() => track("quote_click")}
@@ -49,7 +55,7 @@ export default function ActionBar() {
       >
         <FileText size={20} strokeWidth={2} aria-hidden="true" />
         Devis gratuit
-      </a>
+      </Link>
     </nav>
   );
 }

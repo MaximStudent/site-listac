@@ -29,7 +29,7 @@ export default function Footer() {
           </ul>
         </nav>
         <nav aria-label="Zone d'intervention">
-          <p className="font-semibold mb-2">Zone d'intervention</p>
+          <p className="font-semibold mb-2">Zone d&apos;intervention</p>
           <ul className="space-y-1 text-sm">
             {AREAS.map((a) => (
               <li key={a.slug}>

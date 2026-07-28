@@ -5,6 +5,40 @@
  * Google Business Profile.
  */
 
+/**
+ * INTÉGRATIONS EN ATTENTE DE BRANCHEMENT
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Ces trois valeurs n'existent pas encore côté client. Deux règles ici :
+ *
+ * 1. Elles sont typées `string` EXPLICITEMENT, et pas laissées à l'inférence de
+ *    `as const`. Sans ça, `""` prend le type littéral `""`, TypeScript considère
+ *    `if (BUSINESS.n8nWebhookUrl)` comme toujours faux et réduit la branche
+ *    d'envoi à `never` : du code mort qui compile, mais qui ne se réveillera pas
+ *    tout seul le jour où l'URL arrive. C'est le piège classique de `as const`
+ *    sur une valeur destinée à changer.
+ *
+ * 2. Elles se renseignent par variable d'environnement, SANS toucher au code.
+ *    Sur Vercel : Settings → Environment Variables. En local : `.env.local`.
+ *    `output: "export"` fige ces valeurs au build — un changement de variable
+ *    impose donc un redéploiement, c'est normal et voulu (site 100 % statique).
+ *
+ * Tant qu'une valeur est vide, le code appelant DOIT prévoir une porte de sortie
+ * (le formulaire bascule sur un e-mail pré-rempli, le bouton avis ne s'affiche
+ * pas). Un lien mort est pire qu'un lien absent.
+ */
+export const INTEGRATIONS: {
+  /** Webhook n8n (VPS UE) — réception des leads + tracking des clics. */
+  n8nWebhookUrl: string;
+  /** Lien « Laissez un avis » de la fiche Google (format `https://g.page/r/…`). */
+  googleReviewUrl: string;
+  /** URL publique de la fiche Google Business Profile. */
+  googleBusinessUrl: string;
+} = {
+  n8nWebhookUrl: process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL ?? "",
+  googleReviewUrl: process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL ?? "",
+  googleBusinessUrl: process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL ?? "",
+};
+
 export const BUSINESS = {
   legalName: "LISTAC s.r.l.",
   brandName: "LISTAC fils",
@@ -27,14 +61,17 @@ export const BUSINESS = {
   /** schema.org openingHoursSpecification */
   openingHoursSchema: "Mo-Fr 08:00-17:30",
   instagram: "https://www.instagram.com/listac_srl",
-  /** TODO CLIENT: lien « Laissez un avis » exact de la fiche Google (g.page/r/…) */
-  googleReviewUrl: "",
-  /** TODO CLIENT: URL publique de la fiche Google Business Profile */
-  googleBusinessUrl: "",
   rating: { value: "5.0", count: 6 }, // valeurs réelles — ne jamais arrondir/gonfler
-  /** TODO CLIENT (Prompt 5 / n8n) : URL du webhook de tracking + formulaire */
-  n8nWebhookUrl: "",
-  siteUrl: "https://www.listac.com",
+  /**
+   * TODO CLIENT (BLOQUANT AVANT MISE EN LIGNE) : confirmer le domaine réel.
+   * Cette valeur alimente les canonicals, le JSON-LD, robots.txt et le sitemap.
+   * Si le domaine final diffère, TOUTES ces URL pointent à côté d'un coup.
+   * Surchargeable au build : `NEXT_PUBLIC_SITE_URL`, sans barre finale.
+   */
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.listac.com",
+  // Intégrations en attente — voir le bloc INTEGRATIONS ci-dessus pour le « pourquoi »
+  // du typage explicite. Ré-exposées ici pour ne pas casser les appels existants.
+  ...INTEGRATIONS,
 } as const;
 
 /**
