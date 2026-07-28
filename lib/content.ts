@@ -47,7 +47,7 @@ export const SERVICE_CONTENT: Record<string, ServiceContent> = {
     faq: [
       {
         q: "J'ai reçu un PV avec infractions, que faire ?",
-        a: "Envoyez-nous le procès-verbal (photo via le formulaire). Nous chiffrons la correction de chaque infraction et convenons d'une date. Après travaux, l'organisme agréé revient contrôler.",
+        a: "Contactez-nous avec le procès-verbal sous les yeux. Nous chiffrons la correction de chaque infraction et convenons d'une date. Après travaux, l'organisme agréé revient contrôler.",
       },
       {
         q: "Combien de temps ai-je pour me mettre en conformité après une vente ?",
@@ -225,7 +225,7 @@ export type Realisation = {
 };
 
 /**
- * RÉALISATIONS — 10 chantiers réels, reconstruits le 2026-07-27 depuis les
+ * RÉALISATIONS — 9 chantiers réels, reconstruits le 2026-07-27 depuis les
  * publications Instagram de Gabriel (run Apify `hlBu0Nj9s0ujwppRH`).
  * Chaque commune vient du geotag du post : plus aucun `TODO CLIENT: commune`.
  *
@@ -345,10 +345,10 @@ export const REALISATIONS: readonly Realisation[] = [
     type: "Alimentation extérieure",
     date: "octobre 2024",
     description:
-      "Amener du courant au fond d'un jardin — pour un abri, un éclairage extérieur, un portail ou une borne de recharge — fait généralement peur : on imagine la pelouse éventrée. Nous utilisons une trancheuse de sol, qui ouvre une saignée nette de quelques centimètres de large. La gaine est posée, la tranchée refermée, et quelques semaines plus tard la ligne a disparu sous l'herbe. C'est le détail qui fait accepter le chantier.",
+      "Amener du courant au fond d'un jardin — pour un abri, un éclairage extérieur, un portail ou une borne de recharge — fait généralement peur : on imagine la pelouse éventrée. Nous utilisons une tranchéeuse de sol, qui ouvre une saignée nette de quelques centimètres de large. La gaine est posée, la tranchée refermée, et quelques semaines plus tard la ligne a disparu sous l'herbe. C'est le détail qui fait accepter le chantier.",
     before: "/images/realisations/jodoigne-gaines-jardin-trancheuse-avant.webp",
     after: "/images/realisations/jodoigne-gaines-jardin-trancheuse-apres.webp",
-    altBefore: "Tranchée nette ouverte à la trancheuse de sol à travers une pelouse",
+    altBefore: "Tranchée nette ouverte à la tranchéeuse de sol à travers une pelouse",
     altAfter: "Pelouse refermée après passage de la gaine, trace de la tranchée à peine visible",
   },
   {
@@ -383,7 +383,7 @@ export const REALISATIONS: readonly Realisation[] = [
     altBefore: "Multitude de câbles électriques non repérés dans une cave, avant intervention",
     altAfter: "Modules de domotique Niko Home Control câblés et repérés dans le coffret",
   },
-  // ─────────────────────────────────────────────────────────────────────────────
+  // ──────────────────────────────────────────────────────────────────────────────
   // FICHE RETIRÉE le 2026-07-27 : « Éclairage LED en hexagones dans un garage »
   // (Autre-Église, février 2024). Maxim a confirmé qu'il s'agit du garage PERSONNEL
   // de Gabriel, pas d'un chantier client. La présenter comme une réalisation serait
@@ -396,7 +396,7 @@ export const REALISATIONS: readonly Realisation[] = [
   // Google Business Profile l'exige. C'est l'unique exception assumée à la règle
   // « une page commune = un chantier documenté » (voir docs/08-geotags-communes.md).
   // TODO CLIENT: obtenir une photo de chantier réel à Ramillies pour combler ce trou.
-  // ─────────────────────────────────────────────────────────────────────────────
+  // ──────────────────────────────────────────────────────────────────────────────
 ];
 
 export const ALL_SLUGS = [
