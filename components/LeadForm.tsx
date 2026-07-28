@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { AREAS, BUSINESS } from "@/lib/config";
 
@@ -22,8 +23,8 @@ type Status = "idle" | "sending" | "ok" | "error";
  * « facultatif » — un champ facultatif non signalé est vécu comme obligatoire et
  * fait abandonner.
  *
- * Envoi : webhook quand `BUSINESS.n8nWebhookUrl` sera renseigné. En attendant,
- * bascule vers un e-mail pré-rempli contenant TOUTES les réponses.
+ * Envoi : webhook n8n dès que `NEXT_PUBLIC_N8N_WEBHOOK_URL` est définie au build.
+ * En attendant, bascule vers un e-mail pré-rempli contenant TOUTES les réponses.
  */
 
 const BESOINS = [
@@ -45,7 +46,11 @@ const BATIMENTS = [
   "Autre",
 ] as const;
 
-const DELAIS = ["C'est urgent", "Dans le mois", "Je prépare un projet"] as const;
+const DELAIS = [
+  "C'est urgent",
+  "Dans le mois",
+  "Je prépare un projet",
+] as const;
 
 const COMMUNES = [...AREAS.map((a) => a.commune), "Une autre commune"] as const;
 
@@ -162,8 +167,11 @@ export default function LeadForm() {
     data.set("batiment", batiment);
     data.set("delai", delai);
 
-    // TODO CLIENT : renseigner BUSINESS.n8nWebhookUrl. Tant que c'est vide,
-    // on bascule sur un e-mail pré-rempli — le visiteur n'est jamais bloqué.
+    // Webhook n8n : se renseigne par la variable d'environnement
+    // `NEXT_PUBLIC_N8N_WEBHOOK_URL` (Vercel → Settings → Environment Variables),
+    // sans modifier une ligne de code. Tant qu'elle est vide, on bascule sur un
+    // e-mail pré-rempli — le visiteur n'est jamais bloqué par une intégration pas
+    // encore branchée. Voir le bloc INTEGRATIONS dans `lib/config.ts`.
     if (BUSINESS.n8nWebhookUrl) {
       try {
         const res = await fetch(BUSINESS.n8nWebhookUrl, { method: "POST", body: data });
@@ -262,23 +270,14 @@ export default function LeadForm() {
               />
             </div>
 
-            <div>
-              <label htmlFor="photo" className="mb-1 block font-medium">
-                Une photo ?{" "}
-                <span className="font-normal text-[var(--color-text-muted)]">(facultatif)</span>
-              </label>
-              <p className="mb-2 text-sm text-[var(--color-text-muted)]">
-                Une photo du tableau, de la pièce ou du procès-verbal de contrôle nous évite
-                souvent une visite.
-              </p>
-              <input
-                id="photo"
-                name="photo"
-                type="file"
-                accept="image/*"
-                className="block w-full text-sm"
-              />
-            </div>
+            {/*
+              CHAMP PHOTO RETIRÉ le 2026-07-27 (décision Maxim).
+              Raison : faire transiter un fichier depuis un site statique jusqu'à une
+              boîte de réception est le seul morceau réellement complexe de la chaîne,
+              pour le moins utile des champs. Un champ qui promet d'envoyer une photo
+              qui n'arrive nulle part est pire que pas de champ du tout.
+              À réintroduire seulement quand le moteur d'envoi saura gérer les fichiers.
+            */}
           </div>
         </section>
 
@@ -423,9 +422,9 @@ export default function LeadForm() {
 
         <p className="m-0 text-xs text-[var(--color-text-muted)]">
           Vos données servent uniquement à traiter votre demande —{" "}
-          <a href="/confidentialite/" className="underline">
+          <Link href="/confidentialite/" className="underline">
             politique de confidentialité
-          </a>
+          </Link>
           .
         </p>
       </div>
