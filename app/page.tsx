@@ -232,7 +232,26 @@ export default function HomePage() {
             </Reveal>
           ))}
         </div>
-        {/* TODO CLIENT: BUSINESS.googleReviewUrl (lien g.page/r/… de la fiche) pour le bouton « Voir nos avis Google » */}
+        {/*
+          Bouton « Voir tous nos avis » — s'affiche TOUT SEUL le jour où
+          `NEXT_PUBLIC_GOOGLE_BUSINESS_URL` (ou à défaut `NEXT_PUBLIC_GOOGLE_REVIEW_URL`)
+          est définie au build. Aucune modification de code à prévoir.
+          Tant que la valeur est vide : rien n'est rendu — plutôt que d'afficher un
+          bouton qui mène nulle part, ce qui coûte plus de confiance qu'il n'en rapporte.
+        */}
+        {(BUSINESS.googleBusinessUrl || BUSINESS.googleReviewUrl) && (
+          <div className="mt-8">
+            <a
+              href={BUSINESS.googleBusinessUrl || BUSINESS.googleReviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center rounded-[var(--radius)] border border-[var(--color-primary)] px-6 font-medium text-[var(--color-primary)] transition-colors hover:bg-[var(--color-surface-alt)]"
+              style={{ height: "var(--touch-target)", transitionDuration: "var(--duration-fast)" }}
+            >
+              Voir les {BUSINESS.rating.count} avis sur Google
+            </a>
+          </div>
+        )}
       </section>
 
       {/* ============ 6. DIFFÉRENCIATEUR DOMOTIQUE ============ */}
