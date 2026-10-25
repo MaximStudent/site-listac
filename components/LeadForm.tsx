@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { AREAS, BUSINESS } from "@/lib/config";
 
-type Status = "idle" | "sending" | "ok" | "error";
+// Pas d'état « error » : depuis le repli mailto, toute soumission aboutit.
+// Un état qu'aucun chemin de code ne produit est du code mort.
+type Status = "idle" | "sending" | "ok";
 
 /**
  * ============================================================================
@@ -24,7 +26,9 @@ type Status = "idle" | "sending" | "ok" | "error";
  * fait abandonner.
  *
  * Envoi : webhook n8n dès que `NEXT_PUBLIC_N8N_WEBHOOK_URL` est définie au build.
- * En attendant, bascule vers un e-mail pré-rempli contenant TOUTES les réponses.
+ * En attendant — ET si le webhook échoue — bascule vers un e-mail pré-rempli
+ * contenant TOUTES les réponses. Une demande de devis ne doit jamais mourir sur
+ * un message d'erreur : c'est un client qui part chez le concurrent.
  */
 
 const BESOINS = [
@@ -162,24 +166,20 @@ export default function LeadForm() {
     }
     setStatus("sending");
 
-    data.set("commune", communeFinale);
-    data.set("besoin", besoin);
-    data.set("batiment", batiment);
-    data.set("delai", delai);
+    const payload = {
+      nom,
+      tel,
+      email,
+      besoin,
+      batiment,
+      commune: communeFinale,
+      delai,
+      details,
+      source: typeof window !== "undefined" ? window.location.pathname : "",
+    };
 
-    // Webhook n8n : se renseigne par la variable d'environnement
-    // `NEXT_PUBLIC_N8N_WEBHOOK_URL` (Vercel → Settings → Environment Variables),
-    // sans modifier une ligne de code. Tant qu'elle est vide, on bascule sur un
-    // e-mail pré-rempli — le visiteur n'est jamais bloqué par une intégration pas
-    // encore branchée. Voir le bloc INTEGRATIONS dans `lib/config.ts`.
-    if (BUSINESS.n8nWebhookUrl) {
-      try {
-        const res = await fetch(BUSINESS.n8nWebhookUrl, { method: "POST", body: data });
-        setStatus(res.ok ? "ok" : "error");
-      } catch {
-        setStatus("error");
-      }
-    } else {
+    /** Repli : ouvre le brouillon d'e-mail avec toutes les réponses. */
+    const ouvrirMailto = () => {
       const lignes = [
         `Nom : ${nom}`,
         `Téléphone : ${tel}`,
@@ -194,7 +194,44 @@ export default function LeadForm() {
         `mailto:${BUSINESS.email}` +
         `?subject=${encodeURIComponent(`Demande de devis — ${nom}${communeFinale ? ` (${communeFinale})` : ""}`)}` +
         `&body=${encodeURIComponent(lignes.join("\n"))}`;
+    };
+
+    // Webhook n8n : se renseigne par la variable d'environnement
+    // `NEXT_PUBLIC_N8N_WEBHOOK_URL` (Vercel → Settings → Environment Variables),
+    // sans modifier une ligne de code. Tant qu'elle est vide, on bascule sur un
+    // e-mail pré-rempli — le visiteur n'est jamais bloqué par une intégration pas
+    // encore branchée. Voir le bloc INTEGRATIONS dans `lib/config.ts`.
+    //
+    // JSON plutôt que FormData : le serveur n8n reçoit un objet typé, sans
+    // dépendre de la façon dont il découpe le multipart. La contrepartie est un
+    // pré-vol CORS (requête OPTIONS) — géré par Caddy côté serveur, cf.
+    // `memoire/07-infra-n8n.md`.
+    if (!BUSINESS.n8nWebhookUrl) {
+      ouvrirMailto();
       setStatus("ok");
+      return;
+    }
+
+    // Un formulaire qui tourne indéfiniment est pire qu'un formulaire qui échoue.
+    const stop = new AbortController();
+    const minuteur = setTimeout(() => stop.abort(), 10_000);
+    try {
+      const res = await fetch(BUSINESS.n8nWebhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: stop.signal,
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      setStatus("ok");
+    } catch {
+      // Serveur n8n indisponible, coupé, ou CORS mal configuré : on ne perd pas
+      // la demande, on repasse par l'e-mail. Le visiteur voit un brouillon
+      // pré-rempli, pas un cul-de-sac.
+      ouvrirMailto();
+      setStatus("ok");
+    } finally {
+      clearTimeout(minuteur);
     }
   }
 
@@ -405,20 +442,6 @@ export default function LeadForm() {
             à mieux vous répondre.
           </p>
         </div>
-
-        {status === "error" && (
-          <p className="m-0 text-sm" style={{ color: "var(--color-error)" }}>
-            L&apos;envoi a échoué. Appelez-nous au{" "}
-            <a href={`tel:${BUSINESS.phone}`} className="underline">
-              {BUSINESS.phoneDisplay}
-            </a>{" "}
-            ou écrivez à{" "}
-            <a href={`mailto:${BUSINESS.email}`} className="underline">
-              {BUSINESS.email}
-            </a>
-            .
-          </p>
-        )}
 
         <p className="m-0 text-xs text-[var(--color-text-muted)]">
           Vos données servent uniquement à traiter votre demande —{" "}
